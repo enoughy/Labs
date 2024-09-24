@@ -4,10 +4,10 @@
 
 int main() {
 	struct timespec start, end;
-	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 	unsigned long long N;
 	long double res = 0;
-	scanf("%d", &N);
+	scanf("%llu", &N);
+	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 	unsigned long long n = 0;
 	while (n < N) {
 		res += pow(-1, n) / (2 * n + 1);
