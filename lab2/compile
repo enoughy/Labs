@@ -1,0 +1,8 @@
+#!/bin/bash
+gcc -O0 -lm lab_1.c -o lab_1_O0 -lrt
+gcc -O1 -lm lab_1.c -o lab_1_O1 -lrt
+gcc -O2 -lm lab_1.c -o lab_1_O2 -lrt
+gcc -O3 -lm lab_1.c -o lab_1_O3 -lrt
+gcc -Os -lm lab_1.c -o lab_1_Os -lrt
+gcc -Ofast -lm lab_1.c -o lab_1_Ofast -lrt
+gcc -Og -lm lab_1.c -o lab_1_Og -lrt
