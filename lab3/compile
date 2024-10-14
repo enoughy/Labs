@@ -1,0 +1,7 @@
+#!/bin/bash
+gcc -S -O0 lab_1.c -o x86-64_O0
+gcc -S -O0 -m32 lab_1.c -o x86_O0
+gcc -S -O1 lab_1.c -o x86-64_O1
+gcc -S -O1 -m32 lab_1.c -o x86_O1
+gcc -S -Ofast lab_1.c -o x86-64_Ofast
+gcc -S -Ofast -m32 lab_1.c -o x86_Ofast

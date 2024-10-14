@@ -1,0 +1,190 @@
+	.file	"lab_1.c"
+	.text
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC1:
+	.string	"%llu"
+.LC5:
+	.string	"%Lf \n"
+.LC7:
+	.string	"Time taken: %lf sec.\n"
+	.text
+	.globl	main
+	.type	main, @function
+main:
+.LFB11:
+	.cfi_startproc
+	leal	4(%esp), %ecx
+	.cfi_def_cfa 1, 0
+	andl	$-16, %esp
+	pushl	-4(%ecx)
+	pushl	%ebp
+	movl	%esp, %ebp
+	.cfi_escape 0x10,0x5,0x2,0x75,0
+	pushl	%edi
+	pushl	%esi
+	pushl	%ebx
+	pushl	%ecx
+	.cfi_escape 0xf,0x3,0x75,0x70,0x6
+	.cfi_escape 0x10,0x7,0x2,0x75,0x7c
+	.cfi_escape 0x10,0x6,0x2,0x75,0x78
+	.cfi_escape 0x10,0x3,0x2,0x75,0x74
+	subl	$96, %esp
+	call	__x86.get_pc_thunk.bx
+	addl	$_GLOBAL_OFFSET_TABLE_, %ebx
+	movl	%gs:20, %eax
+	movl	%eax, -28(%ebp)
+	xorl	%eax, %eax
+	leal	-56(%ebp), %eax
+	pushl	%eax
+	leal	.LC1@GOTOFF(%ebx), %eax
+	pushl	%eax
+	call	__isoc99_scanf@PLT
+	addl	$8, %esp
+	leal	-44(%ebp), %eax
+	pushl	%eax
+	pushl	$4
+	call	clock_gettime@PLT
+	movl	-56(%ebp), %eax
+	movl	%eax, -68(%ebp)
+	movl	-52(%ebp), %ecx
+	addl	$16, %esp
+	orl	%ecx, %eax
+	je	.L7
+	movl	$1, -88(%ebp)
+	movl	$0, -84(%ebp)
+	movl	$0, %esi
+	movl	$0, %edi
+	fldz
+	fstpt	-80(%ebp)
+	movl	%ecx, -100(%ebp)
+	jmp	.L5
+.L10:
+	fadds	.LC2@GOTOFF(%ebx)
+	jmp	.L3
+.L4:
+	fstpl	-96(%ebp)
+	fldl	-96(%ebp)
+	fdivrp	%st, %st(1)
+	fldt	-80(%ebp)
+	faddp	%st, %st(1)
+	fstpt	-80(%ebp)
+	addl	$1, %esi
+	adcl	$0, %edi
+	addl	$2, -88(%ebp)
+	adcl	$0, -84(%ebp)
+	movl	-68(%ebp), %eax
+	xorl	%esi, %eax
+	movl	-100(%ebp), %edx
+	xorl	%edi, %edx
+	orl	%edx, %eax
+	je	.L2
+.L5:
+	movd	%esi, %xmm0
+	movd	%edi, %xmm1
+	punpckldq	%xmm1, %xmm0
+	movq	%xmm0, -64(%ebp)
+	fildq	-64(%ebp)
+	testl	%edi, %edi
+	js	.L10
+.L3:
+	fstpl	-96(%ebp)
+	pushl	-92(%ebp)
+	pushl	-96(%ebp)
+	pushl	$-1074790400
+	pushl	$0
+	call	pow@PLT
+	movl	-88(%ebp), %eax
+	movl	-84(%ebp), %edx
+	movd	%eax, %xmm0
+	movd	%edx, %xmm2
+	punpckldq	%xmm2, %xmm0
+	movq	%xmm0, -64(%ebp)
+	fildq	-64(%ebp)
+	addl	$16, %esp
+	testl	%edx, %edx
+	jns	.L4
+	fadds	.LC2@GOTOFF(%ebx)
+	jmp	.L4
+.L7:
+	fldz
+	fstpt	-80(%ebp)
+.L2:
+	fldt	-80(%ebp)
+	fmuls	.LC4@GOTOFF(%ebx)
+	leal	-12(%esp), %esp
+	fstpt	(%esp)
+	leal	.LC5@GOTOFF(%ebx), %eax
+	pushl	%eax
+	call	printf@PLT
+	addl	$8, %esp
+	leal	-36(%ebp), %eax
+	pushl	%eax
+	pushl	$4
+	call	clock_gettime@PLT
+	movl	-32(%ebp), %eax
+	subl	-40(%ebp), %eax
+	movl	%eax, -80(%ebp)
+	fildl	-80(%ebp)
+	fmull	.LC6@GOTOFF(%ebx)
+	movl	-36(%ebp), %eax
+	subl	-44(%ebp), %eax
+	movl	%eax, -80(%ebp)
+	fildl	-80(%ebp)
+	faddp	%st, %st(1)
+	fstpl	4(%esp)
+	leal	.LC7@GOTOFF(%ebx), %eax
+	movl	%eax, (%esp)
+	call	printf@PLT
+	addl	$16, %esp
+	movl	-28(%ebp), %eax
+	subl	%gs:20, %eax
+	jne	.L11
+	movl	$0, %eax
+	leal	-16(%ebp), %esp
+	popl	%ecx
+	.cfi_remember_state
+	.cfi_restore 1
+	.cfi_def_cfa 1, 0
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
+	popl	%ebp
+	.cfi_restore 5
+	leal	-4(%ecx), %esp
+	.cfi_def_cfa 4, 4
+	ret
+.L11:
+	.cfi_restore_state
+	call	__stack_chk_fail_local
+	.cfi_endproc
+.LFE11:
+	.size	main, .-main
+	.section	.rodata.cst4,"aM",@progbits,4
+	.align 4
+.LC2:
+	.long	1602224128
+	.align 4
+.LC4:
+	.long	1082130432
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC6:
+	.long	-400107883
+	.long	1041313291
+	.section	.text.__x86.get_pc_thunk.bx,"axG",@progbits,__x86.get_pc_thunk.bx,comdat
+	.globl	__x86.get_pc_thunk.bx
+	.hidden	__x86.get_pc_thunk.bx
+	.type	__x86.get_pc_thunk.bx, @function
+__x86.get_pc_thunk.bx:
+.LFB12:
+	.cfi_startproc
+	movl	(%esp), %ebx
+	ret
+	.cfi_endproc
+.LFE12:
+	.hidden	__stack_chk_fail_local
+	.ident	"GCC: (GNU) 14.1.1 20240522"
+	.section	.note.GNU-stack,"",@progbits

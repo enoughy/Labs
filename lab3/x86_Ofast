@@ -1,0 +1,223 @@
+	.file	"lab_1.c"
+	.text
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.LC2:
+	.string	"%llu"
+.LC6:
+	.string	"%Lf \n"
+.LC8:
+	.string	"Time taken: %lf sec.\n"
+	.section	.text.startup,"ax",@progbits
+	.p2align 4
+	.globl	main
+	.type	main, @function
+main:
+.LFB11:
+	.cfi_startproc
+	leal	4(%esp), %ecx
+	.cfi_def_cfa 1, 0
+	andl	$-16, %esp
+	pushl	-4(%ecx)
+	pushl	%ebp
+	movl	%esp, %ebp
+	.cfi_escape 0x10,0x5,0x2,0x75,0
+	pushl	%edi
+	pushl	%esi
+	pushl	%ebx
+	.cfi_escape 0x10,0x7,0x2,0x75,0x7c
+	.cfi_escape 0x10,0x6,0x2,0x75,0x78
+	.cfi_escape 0x10,0x3,0x2,0x75,0x74
+	call	__x86.get_pc_thunk.bx
+	addl	$_GLOBAL_OFFSET_TABLE_, %ebx
+	pushl	%ecx
+	.cfi_escape 0xf,0x3,0x75,0x70,0x6
+	subl	$112, %esp
+	movl	%gs:20, %eax
+	movl	%eax, -28(%ebp)
+	leal	-56(%ebp), %eax
+	pushl	%eax
+	leal	.LC2@GOTOFF(%ebx), %eax
+	pushl	%eax
+	call	__isoc99_scanf@PLT
+	leal	-44(%ebp), %eax
+	popl	%ecx
+	popl	%esi
+	pushl	%eax
+	pushl	$4
+	call	clock_gettime@PLT
+	movl	-56(%ebp), %ecx
+	movl	-52(%ebp), %edi
+	addl	$16, %esp
+	movl	%ecx, %eax
+	movl	%ecx, -76(%ebp)
+	orl	%edi, %eax
+	movl	%edi, -100(%ebp)
+	je	.L8
+	movl	%ecx, %eax
+	xorl	$1, %eax
+	orl	%edi, %eax
+	je	.L13
+	movsd	.LC4@GOTOFF(%ebx), %xmm4
+	xorl	%ecx, %ecx
+	fld1
+	xorl	%edi, %edi
+	movss	.LC3@GOTOFF(%ebx), %xmm5
+	movl	$3, %edx
+	movl	$1, %esi
+	movsd	%xmm4, -112(%ebp)
+	movss	%xmm5, -104(%ebp)
+	.p2align 4,,10
+	.p2align 3
+.L3:
+	movd	%esi, %xmm0
+	movd	%edi, %xmm2
+	punpckldq	%xmm2, %xmm0
+	movq	%xmm0, -64(%ebp)
+	fildq	-64(%ebp)
+	testl	%edi, %edi
+	jns	.L15
+	fadds	-104(%ebp)
+	fxch	%st(1)
+	jmp	.L4
+	.p2align 4,,10
+	.p2align 3
+.L15:
+	fxch	%st(1)
+.L4:
+	fstpt	-88(%ebp)
+	subl	$8, %esp
+	movl	%edx, -96(%ebp)
+	movl	%ecx, -92(%ebp)
+	fstpl	(%esp)
+	pushl	-108(%ebp)
+	pushl	-112(%ebp)
+	call	pow@PLT
+	movl	-92(%ebp), %ecx
+	movl	-96(%ebp), %edx
+	addl	$16, %esp
+	fstpl	-72(%ebp)
+	movsd	-72(%ebp), %xmm1
+	movd	%edx, %xmm0
+	movd	%ecx, %xmm3
+	testl	%ecx, %ecx
+	punpckldq	%xmm3, %xmm0
+	movq	%xmm0, -64(%ebp)
+	fildq	-64(%ebp)
+	fldt	-88(%ebp)
+	jns	.L16
+	fxch	%st(1)
+	fadds	-104(%ebp)
+	jmp	.L5
+	.p2align 4,,10
+	.p2align 3
+.L16:
+	fxch	%st(1)
+.L5:
+	fstpl	-72(%ebp)
+	movsd	-72(%ebp), %xmm0
+	addl	$1, %esi
+	movl	-76(%ebp), %eax
+	adcl	$0, %edi
+	addl	$2, %edx
+	divsd	%xmm0, %xmm1
+	adcl	$0, %ecx
+	xorl	%esi, %eax
+	movsd	%xmm1, -72(%ebp)
+	faddl	-72(%ebp)
+	movl	%eax, -72(%ebp)
+	movl	-100(%ebp), %eax
+	xorl	%edi, %eax
+	orl	%eax, -72(%ebp)
+	jne	.L3
+.L2:
+	fmuls	.LC5@GOTOFF(%ebx)
+	subl	$12, %esp
+	leal	.LC6@GOTOFF(%ebx), %eax
+	fstpt	(%esp)
+	pushl	%eax
+	call	printf@PLT
+	popl	%eax
+	leal	-36(%ebp), %eax
+	popl	%edx
+	pushl	%eax
+	pushl	$4
+	call	clock_gettime@PLT
+	movl	-32(%ebp), %eax
+	pxor	%xmm0, %xmm0
+	subl	-40(%ebp), %eax
+	cvtsi2sdl	%eax, %xmm0
+	pxor	%xmm1, %xmm1
+	movl	-36(%ebp), %eax
+	subl	-44(%ebp), %eax
+	mulsd	.LC7@GOTOFF(%ebx), %xmm0
+	cvtsi2sdl	%eax, %xmm1
+	leal	.LC8@GOTOFF(%ebx), %eax
+	movl	%eax, (%esp)
+	addsd	%xmm1, %xmm0
+	movsd	%xmm0, 4(%esp)
+	call	printf@PLT
+	addl	$16, %esp
+	movl	-28(%ebp), %eax
+	subl	%gs:20, %eax
+	jne	.L14
+	leal	-16(%ebp), %esp
+	xorl	%eax, %eax
+	popl	%ecx
+	.cfi_remember_state
+	.cfi_restore 1
+	.cfi_def_cfa 1, 0
+	popl	%ebx
+	.cfi_restore 3
+	popl	%esi
+	.cfi_restore 6
+	popl	%edi
+	.cfi_restore 7
+	popl	%ebp
+	.cfi_restore 5
+	leal	-4(%ecx), %esp
+	.cfi_def_cfa 4, 4
+	ret
+.L8:
+	.cfi_restore_state
+	fldz
+	jmp	.L2
+.L13:
+	fld1
+	jmp	.L2
+.L14:
+	call	__stack_chk_fail_local
+	.cfi_endproc
+.LFE11:
+	.size	main, .-main
+	.section	.rodata.cst4,"aM",@progbits,4
+	.align 4
+.LC3:
+	.long	1602224128
+	.section	.rodata.cst8,"aM",@progbits,8
+	.align 8
+.LC4:
+	.long	0
+	.long	-1074790400
+	.section	.rodata.cst4
+	.align 4
+.LC5:
+	.long	1082130432
+	.section	.rodata.cst8
+	.align 8
+.LC7:
+	.long	-400107883
+	.long	1041313291
+	.section	.text.__x86.get_pc_thunk.bx,"axG",@progbits,__x86.get_pc_thunk.bx,comdat
+	.globl	__x86.get_pc_thunk.bx
+	.hidden	__x86.get_pc_thunk.bx
+	.type	__x86.get_pc_thunk.bx, @function
+__x86.get_pc_thunk.bx:
+.LFB12:
+	.cfi_startproc
+	movl	(%esp), %ebx
+	ret
+	.cfi_endproc
+.LFE12:
+	.hidden	__stack_chk_fail_local
+	.ident	"GCC: (GNU) 14.1.1 20240522"
+	.section	.note.GNU-stack,"",@progbits
