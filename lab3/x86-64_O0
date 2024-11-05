@@ -18,7 +18,7 @@ main:
 	.cfi_offset 6, -16
 	movq	%rsp, %rbp
 	.cfi_def_cfa_register 6
-	subq	$96, %rsp
+	subq	$80, %rsp
 	movq	%fs:40, %rax
 	movq	%rax, -8(%rbp)
 	xorl	%eax, %eax
@@ -36,56 +36,43 @@ main:
 	call	clock_gettime@PLT
 	movq	$0, -72(%rbp)
 	jmp	.L2
-.L7:
+.L9:
 	movq	-72(%rbp), %rax
-	testq	%rax, %rax
-	js	.L3
-	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rax, %xmm0
-	jmp	.L4
-.L3:
-	movq	%rax, %rdx
-	shrq	%rdx
 	andl	$1, %eax
-	orq	%rax, %rdx
-	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rdx, %xmm0
-	addsd	%xmm0, %xmm0
-.L4:
-	movq	.LC2(%rip), %rax
-	movapd	%xmm0, %xmm1
-	movq	%rax, %xmm0
-	call	pow@PLT
-	movq	%xmm0, %rcx
+	testq	%rax, %rax
+	jne	.L3
 	movq	-72(%rbp), %rax
 	addq	%rax, %rax
-	addq	$1, %rax
 	testq	%rax, %rax
-	js	.L5
-	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rax, %xmm0
-	jmp	.L6
+	jne	.L4
+	fld1
+	jmp	.L5
+.L4:
+	fldz
 .L5:
-	movq	%rax, %rdx
-	shrq	%rdx
-	andl	$1, %eax
-	orq	%rax, %rdx
-	pxor	%xmm0, %xmm0
-	cvtsi2sdq	%rdx, %xmm0
-	addsd	%xmm0, %xmm0
-.L6:
-	movq	%rcx, %xmm3
-	divsd	%xmm0, %xmm3
-	movsd	%xmm3, -88(%rbp)
-	fldl	-88(%rbp)
 	fldt	-32(%rbp)
 	faddp	%st, %st(1)
 	fstpt	-32(%rbp)
+	jmp	.L6
+.L3:
+	movq	-72(%rbp), %rax
+	addq	%rax, %rax
+	testq	%rax, %rax
+	jne	.L7
+	fld1
+	jmp	.L8
+.L7:
+	fldz
+.L8:
+	fldt	-32(%rbp)
+	faddp	%st, %st(1)
+	fstpt	-32(%rbp)
+.L6:
 	addq	$1, -72(%rbp)
 .L2:
 	movq	-80(%rbp), %rax
 	cmpq	%rax, -72(%rbp)
-	jb	.L7
+	jb	.L9
 	fldt	-32(%rbp)
 	fldt	.LC3(%rip)
 	fmulp	%st, %st(1)
@@ -123,9 +110,9 @@ main:
 	movl	$0, %eax
 	movq	-8(%rbp), %rdx
 	subq	%fs:40, %rdx
-	je	.L9
+	je	.L11
 	call	__stack_chk_fail@PLT
-.L9:
+.L11:
 	leave
 	.cfi_def_cfa 7, 8
 	ret
@@ -133,10 +120,6 @@ main:
 .LFE0:
 	.size	main, .-main
 	.section	.rodata
-	.align 8
-.LC2:
-	.long	0
-	.long	-1074790400
 	.align 16
 .LC3:
 	.long	0

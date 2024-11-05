@@ -1,11 +1,11 @@
 	.file	"lab_1.c"
 	.text
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.LC2:
+.LC1:
 	.string	"%llu"
-.LC4:
+.LC3:
 	.string	"%Lf \n"
-.LC7:
+.LC6:
 	.string	"Time taken: %lf sec.\n"
 	.section	.text.startup,"ax",@progbits
 	.p2align 4
@@ -14,133 +14,89 @@
 main:
 .LFB11:
 	.cfi_startproc
-	pushq	%rbp
-	.cfi_def_cfa_offset 16
-	.cfi_offset 6, -16
-	leaq	.LC2(%rip), %rdi
-	pushq	%rbx
-	.cfi_def_cfa_offset 24
-	.cfi_offset 3, -24
-	subq	$88, %rsp
-	.cfi_def_cfa_offset 112
+	subq	$72, %rsp
+	.cfi_def_cfa_offset 80
+	leaq	.LC1(%rip), %rdi
 	movq	%fs:40, %rax
-	movq	%rax, 72(%rsp)
+	movq	%rax, 56(%rsp)
 	xorl	%eax, %eax
-	leaq	24(%rsp), %rsi
+	leaq	8(%rsp), %rsi
 	call	__isoc99_scanf@PLT
-	leaq	32(%rsp), %rsi
+	leaq	16(%rsp), %rsi
 	movl	$4, %edi
 	call	clock_gettime@PLT
-	movq	24(%rsp), %rbp
-	testq	%rbp, %rbp
-	je	.L10
-	cmpq	$1, %rbp
-	je	.L15
-	movl	$1, %ebx
+	movq	8(%rsp), %rdx
+	testq	%rdx, %rdx
+	je	.L8
+	fldz
+	xorl	%eax, %eax
 	fld1
 	.p2align 4,,10
 	.p2align 3
-.L3:
-	pxor	%xmm1, %xmm1
-	cvtsi2sdq	%rbx, %xmm1
-	testq	%rbx, %rbx
-	jns	.L5
-	movq	%rbx, %rax
-	movq	%rbx, %rdx
-	pxor	%xmm1, %xmm1
-	shrq	%rax
-	andl	$1, %edx
-	orq	%rdx, %rax
-	cvtsi2sdq	%rax, %xmm1
-	addsd	%xmm1, %xmm1
-.L5:
-	movsd	.LC3(%rip), %xmm0
-	fstpt	(%rsp)
-	call	pow@PLT
-	leaq	1(%rbx,%rbx), %rax
-	fldt	(%rsp)
-	pxor	%xmm1, %xmm1
-	cvtsi2sdq	%rax, %xmm1
-	testq	%rax, %rax
-	jns	.L7
-	movq	%rax, %rdx
-	andl	$1, %eax
-	pxor	%xmm1, %xmm1
-	shrq	%rdx
-	orq	%rax, %rdx
-	cvtsi2sdq	%rdx, %xmm1
-	addsd	%xmm1, %xmm1
-.L7:
-	divsd	%xmm1, %xmm0
-	addq	$1, %rbx
-	movsd	%xmm0, (%rsp)
-	faddl	(%rsp)
-	cmpq	%rbp, %rbx
+.L6:
+	testb	$1, %al
 	jne	.L3
+	movq	%rax, %rcx
+	addq	%rcx, %rcx
+	jne	.L3
+	fadd	%st, %st(1)
+.L3:
+	addq	$1, %rax
+	cmpq	%rax, %rdx
+	jne	.L6
+	fstp	%st(0)
 .L2:
-	fmuls	.LC5(%rip)
+	fmuls	.LC4(%rip)
 	subq	$16, %rsp
-	.cfi_def_cfa_offset 128
+	.cfi_def_cfa_offset 96
+	leaq	.LC3(%rip), %rdi
 	xorl	%eax, %eax
-	leaq	.LC4(%rip), %rdi
 	fstpt	(%rsp)
 	call	printf@PLT
-	leaq	64(%rsp), %rsi
+	leaq	48(%rsp), %rsi
 	movl	$4, %edi
 	call	clock_gettime@PLT
-	movq	72(%rsp), %rax
+	movq	56(%rsp), %rax
 	pxor	%xmm0, %xmm0
-	subq	56(%rsp), %rax
+	subq	40(%rsp), %rax
 	cvtsi2sdq	%rax, %xmm0
 	pxor	%xmm1, %xmm1
-	movq	64(%rsp), %rax
-	subq	48(%rsp), %rax
-	mulsd	.LC6(%rip), %xmm0
+	movq	48(%rsp), %rax
+	subq	32(%rsp), %rax
+	mulsd	.LC5(%rip), %xmm0
 	cvtsi2sdq	%rax, %xmm1
-	leaq	.LC7(%rip), %rdi
+	leaq	.LC6(%rip), %rdi
 	movl	$1, %eax
 	addsd	%xmm1, %xmm0
 	call	printf@PLT
 	popq	%rax
-	.cfi_def_cfa_offset 120
+	.cfi_def_cfa_offset 88
 	popq	%rdx
-	.cfi_def_cfa_offset 112
-	movq	72(%rsp), %rax
+	.cfi_def_cfa_offset 80
+	movq	56(%rsp), %rax
 	subq	%fs:40, %rax
-	jne	.L16
-	addq	$88, %rsp
-	.cfi_remember_state
-	.cfi_def_cfa_offset 24
+	jne	.L12
 	xorl	%eax, %eax
-	popq	%rbx
-	.cfi_def_cfa_offset 16
-	popq	%rbp
+	addq	$72, %rsp
+	.cfi_remember_state
 	.cfi_def_cfa_offset 8
 	ret
-.L10:
+.L8:
 	.cfi_restore_state
 	fldz
 	jmp	.L2
-.L15:
-	fld1
-	jmp	.L2
-.L16:
+.L12:
 	call	__stack_chk_fail@PLT
 	.cfi_endproc
 .LFE11:
 	.size	main, .-main
-	.section	.rodata.cst8,"aM",@progbits,8
-	.align 8
-.LC3:
-	.long	0
-	.long	-1074790400
 	.section	.rodata.cst4,"aM",@progbits,4
 	.align 4
-.LC5:
+.LC4:
 	.long	1082130432
-	.section	.rodata.cst8
+	.section	.rodata.cst8,"aM",@progbits,8
 	.align 8
-.LC6:
+.LC5:
 	.long	-400107883
 	.long	1041313291
 	.ident	"GCC: (GNU) 14.1.1 20240522"

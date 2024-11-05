@@ -10,7 +10,12 @@ int main() {
 	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
 	unsigned long long n = 0;
 	while (n < N) {
-		res += pow(-1, n) / (2 * n + 1);
+        if (n%2==0) {
+        	res += 1 / (2 * n + 1);
+        }
+        else {
+            res += 1 / (2 * n + 1);
+        }
 		n++;
 	}
 	res *= 4;

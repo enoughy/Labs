@@ -3,9 +3,9 @@
 	.section	.rodata
 .LC1:
 	.string	"%llu"
-.LC5:
+.LC4:
 	.string	"%Lf \n"
-.LC7:
+.LC6:
 	.string	"Time taken: %lf sec.\n"
 	.text
 	.globl	main
@@ -48,44 +48,47 @@ main:
 	movl	$0, -48(%ebp)
 	movl	$0, -44(%ebp)
 	jmp	.L2
-.L5:
-	fildq	-48(%ebp)
-	cmpl	$0, -44(%ebp)
-	jns	.L3
-	fldt	.LC2@GOTOFF(%ebx)
-	faddp	%st, %st(1)
-.L3:
-	fstpl	-72(%ebp)
-	pushl	-68(%ebp)
-	pushl	-72(%ebp)
-	fld1
-	fchs
-	leal	-8(%esp), %esp
-	fstpl	(%esp)
-	call	pow@PLT
-	addl	$16, %esp
+.L9:
+	movl	-48(%ebp), %eax
+	movl	-44(%ebp), %edx
+	andl	$1, %eax
+	movl	$0, %edx
+	movl	%eax, %ecx
+	orl	%edx, %ecx
+	jne	.L3
 	movl	-48(%ebp), %eax
 	movl	-44(%ebp), %edx
 	addl	%eax, %eax
 	adcl	%edx, %edx
-	addl	$1, %eax
-	adcl	$0, %edx
-	movd	%eax, %xmm0
-	movd	%edx, %xmm1
-	punpckldq	%xmm1, %xmm0
-	movq	%xmm0, -64(%ebp)
-	fildq	-64(%ebp)
-	testl	%edx, %edx
-	jns	.L4
-	fldt	.LC2@GOTOFF(%ebx)
-	faddp	%st, %st(1)
+	movl	%eax, %ecx
+	orl	%edx, %ecx
+	jne	.L4
+	fld1
+	jmp	.L5
 .L4:
-	fstpl	-72(%ebp)
-	fldl	-72(%ebp)
-	fdivrp	%st, %st(1)
+	fldz
+.L5:
 	fldt	-24(%ebp)
 	faddp	%st, %st(1)
 	fstpt	-24(%ebp)
+	jmp	.L6
+.L3:
+	movl	-48(%ebp), %eax
+	movl	-44(%ebp), %edx
+	addl	%eax, %eax
+	adcl	%edx, %edx
+	movl	%eax, %ecx
+	orl	%edx, %ecx
+	jne	.L7
+	fld1
+	jmp	.L8
+.L7:
+	fldz
+.L8:
+	fldt	-24(%ebp)
+	faddp	%st, %st(1)
+	fstpt	-24(%ebp)
+.L6:
 	addl	$1, -48(%ebp)
 	adcl	$0, -44(%ebp)
 .L2:
@@ -94,15 +97,15 @@ main:
 	movl	-44(%ebp), %ecx
 	cmpl	%eax, -48(%ebp)
 	sbbl	%edx, %ecx
-	jc	.L5
+	jc	.L9
 	fldt	-24(%ebp)
-	fldt	.LC4@GOTOFF(%ebx)
+	fldt	.LC3@GOTOFF(%ebx)
 	fmulp	%st, %st(1)
 	fstpt	-24(%ebp)
 	pushl	-16(%ebp)
 	pushl	-20(%ebp)
 	pushl	-24(%ebp)
-	leal	.LC5@GOTOFF(%ebx), %eax
+	leal	.LC4@GOTOFF(%ebx), %eax
 	pushl	%eax
 	call	printf@PLT
 	addl	$16, %esp
@@ -115,29 +118,29 @@ main:
 	movl	-32(%ebp), %edx
 	movl	-40(%ebp), %eax
 	subl	%eax, %edx
-	movl	%edx, -72(%ebp)
-	fildl	-72(%ebp)
+	movl	%edx, -60(%ebp)
+	fildl	-60(%ebp)
 	movl	-28(%ebp), %edx
 	movl	-36(%ebp), %eax
 	subl	%eax, %edx
-	movl	%edx, -72(%ebp)
-	fildl	-72(%ebp)
-	fldl	.LC6@GOTOFF(%ebx)
+	movl	%edx, -60(%ebp)
+	fildl	-60(%ebp)
+	fldl	.LC5@GOTOFF(%ebx)
 	fmulp	%st, %st(1)
 	faddp	%st, %st(1)
 	subl	$4, %esp
 	leal	-8(%esp), %esp
 	fstpl	(%esp)
-	leal	.LC7@GOTOFF(%ebx), %eax
+	leal	.LC6@GOTOFF(%ebx), %eax
 	pushl	%eax
 	call	printf@PLT
 	addl	$16, %esp
 	movl	$0, %eax
 	movl	-12(%ebp), %edx
 	subl	%gs:20, %edx
-	je	.L7
+	je	.L11
 	call	__stack_chk_fail_local
-.L7:
+.L11:
 	leal	-8(%ebp), %esp
 	popl	%ecx
 	.cfi_restore 1
@@ -154,17 +157,12 @@ main:
 	.size	main, .-main
 	.section	.rodata
 	.align 16
-.LC2:
-	.long	0
-	.long	-2147483648
-	.long	16447
-	.align 16
-.LC4:
+.LC3:
 	.long	0
 	.long	-2147483648
 	.long	16385
 	.align 8
-.LC6:
+.LC5:
 	.long	-400107883
 	.long	1041313291
 	.section	.text.__x86.get_pc_thunk.bx,"axG",@progbits,__x86.get_pc_thunk.bx,comdat

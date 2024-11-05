@@ -1,11 +1,11 @@
 	.file	"lab_1.c"
 	.text
 	.section	.rodata.str1.1,"aMS",@progbits,1
-.LC1:
+.LC2:
 	.string	"%llu"
-.LC5:
+.LC4:
 	.string	"%Lf \n"
-.LC7:
+.LC6:
 	.string	"Time taken: %lf sec.\n"
 	.text
 	.globl	main
@@ -28,16 +28,17 @@ main:
 	.cfi_escape 0x10,0x7,0x2,0x75,0x7c
 	.cfi_escape 0x10,0x6,0x2,0x75,0x78
 	.cfi_escape 0x10,0x3,0x2,0x75,0x74
-	subl	$96, %esp
-	call	__x86.get_pc_thunk.bx
-	addl	$_GLOBAL_OFFSET_TABLE_, %ebx
+	subl	$64, %esp
+	call	__x86.get_pc_thunk.si
+	addl	$_GLOBAL_OFFSET_TABLE_, %esi
 	movl	%gs:20, %eax
 	movl	%eax, -28(%ebp)
 	xorl	%eax, %eax
 	leal	-56(%ebp), %eax
 	pushl	%eax
-	leal	.LC1@GOTOFF(%ebx), %eax
+	leal	.LC2@GOTOFF(%esi), %eax
 	pushl	%eax
+	movl	%esi, %ebx
 	call	__isoc99_scanf@PLT
 	addl	$8, %esp
 	leal	-44(%ebp), %eax
@@ -46,75 +47,65 @@ main:
 	call	clock_gettime@PLT
 	movl	-56(%ebp), %eax
 	movl	%eax, -68(%ebp)
-	movl	-52(%ebp), %ecx
+	movl	-52(%ebp), %edi
 	addl	$16, %esp
-	orl	%ecx, %eax
-	je	.L7
-	movl	$1, -88(%ebp)
-	movl	$0, -84(%ebp)
-	movl	$0, %esi
-	movl	$0, %edi
+	orl	%edi, %eax
+	je	.L8
+	movl	$0, %eax
+	movl	$0, %edx
 	fldz
-	fstpt	-80(%ebp)
-	movl	%ecx, -100(%ebp)
-	jmp	.L5
-.L10:
-	fadds	.LC2@GOTOFF(%ebx)
-	jmp	.L3
+	fldz
+	jmp	.L6
+.L9:
+	fldz
 .L4:
-	fstpl	-96(%ebp)
-	fldl	-96(%ebp)
-	fdivrp	%st, %st(1)
-	fldt	-80(%ebp)
-	faddp	%st, %st(1)
-	fstpt	-80(%ebp)
-	addl	$1, %esi
-	adcl	$0, %edi
-	addl	$2, -88(%ebp)
-	adcl	$0, -84(%ebp)
-	movl	-68(%ebp), %eax
-	xorl	%esi, %eax
-	movl	-100(%ebp), %edx
-	xorl	%edi, %edx
-	orl	%edx, %eax
-	je	.L2
+	faddp	%st, %st(2)
 .L5:
-	movd	%esi, %xmm0
-	movd	%edi, %xmm1
-	punpckldq	%xmm1, %xmm0
-	movq	%xmm0, -64(%ebp)
-	fildq	-64(%ebp)
-	testl	%edi, %edi
-	js	.L10
-.L3:
-	fstpl	-96(%ebp)
-	pushl	-92(%ebp)
-	pushl	-96(%ebp)
-	pushl	$-1074790400
-	pushl	$0
-	call	pow@PLT
-	movl	-88(%ebp), %eax
-	movl	-84(%ebp), %edx
-	movd	%eax, %xmm0
-	movd	%edx, %xmm2
-	punpckldq	%xmm2, %xmm0
-	movq	%xmm0, -64(%ebp)
-	fildq	-64(%ebp)
-	addl	$16, %esp
-	testl	%edx, %edx
-	jns	.L4
-	fadds	.LC2@GOTOFF(%ebx)
+	addl	$1, %eax
+	adcl	$0, %edx
+	movl	-68(%ebp), %ecx
+	xorl	%eax, %ecx
+	movl	%edx, %ebx
+	xorl	%edi, %ebx
+	orl	%ebx, %ecx
+	je	.L13
+.L6:
+	movl	%eax, %ecx
+	andl	$1, %ecx
+	movl	$0, %ebx
+	movl	%ecx, -64(%ebp)
+	movl	%ebx, -60(%ebp)
+	movl	-64(%ebp), %ecx
+	movl	-60(%ebp), %ebx
+	orl	%ebx, %ecx
+	jne	.L3
+	movl	%eax, %ecx
+	movl	%edx, %ebx
+	addl	%ecx, %ecx
+	adcl	%ebx, %ebx
+	movl	%ecx, -64(%ebp)
+	movl	%ebx, -60(%ebp)
+	movl	-64(%ebp), %ecx
+	movl	-60(%ebp), %ebx
+	orl	%ebx, %ecx
+	jne	.L9
+	fld1
 	jmp	.L4
-.L7:
+.L3:
+	fadd	%st, %st(1)
+	jmp	.L5
+.L8:
 	fldz
-	fstpt	-80(%ebp)
+	jmp	.L2
+.L13:
+	fstp	%st(0)
 .L2:
-	fldt	-80(%ebp)
-	fmuls	.LC4@GOTOFF(%ebx)
+	fmuls	.LC3@GOTOFF(%esi)
 	leal	-12(%esp), %esp
 	fstpt	(%esp)
-	leal	.LC5@GOTOFF(%ebx), %eax
+	leal	.LC4@GOTOFF(%esi), %eax
 	pushl	%eax
+	movl	%esi, %ebx
 	call	printf@PLT
 	addl	$8, %esp
 	leal	-36(%ebp), %eax
@@ -123,22 +114,22 @@ main:
 	call	clock_gettime@PLT
 	movl	-32(%ebp), %eax
 	subl	-40(%ebp), %eax
-	movl	%eax, -80(%ebp)
-	fildl	-80(%ebp)
-	fmull	.LC6@GOTOFF(%ebx)
+	movl	%eax, -64(%ebp)
+	fildl	-64(%ebp)
+	fmull	.LC5@GOTOFF(%esi)
 	movl	-36(%ebp), %eax
 	subl	-44(%ebp), %eax
-	movl	%eax, -80(%ebp)
-	fildl	-80(%ebp)
+	movl	%eax, -64(%ebp)
+	fildl	-64(%ebp)
 	faddp	%st, %st(1)
 	fstpl	4(%esp)
-	leal	.LC7@GOTOFF(%ebx), %eax
+	leal	.LC6@GOTOFF(%esi), %eax
 	movl	%eax, (%esp)
 	call	printf@PLT
 	addl	$16, %esp
 	movl	-28(%ebp), %eax
 	subl	%gs:20, %eax
-	jne	.L11
+	jne	.L12
 	movl	$0, %eax
 	leal	-16(%ebp), %esp
 	popl	%ecx
@@ -156,7 +147,7 @@ main:
 	leal	-4(%ecx), %esp
 	.cfi_def_cfa 4, 4
 	ret
-.L11:
+.L12:
 	.cfi_restore_state
 	call	__stack_chk_fail_local
 	.cfi_endproc
@@ -164,24 +155,21 @@ main:
 	.size	main, .-main
 	.section	.rodata.cst4,"aM",@progbits,4
 	.align 4
-.LC2:
-	.long	1602224128
-	.align 4
-.LC4:
+.LC3:
 	.long	1082130432
 	.section	.rodata.cst8,"aM",@progbits,8
 	.align 8
-.LC6:
+.LC5:
 	.long	-400107883
 	.long	1041313291
-	.section	.text.__x86.get_pc_thunk.bx,"axG",@progbits,__x86.get_pc_thunk.bx,comdat
-	.globl	__x86.get_pc_thunk.bx
-	.hidden	__x86.get_pc_thunk.bx
-	.type	__x86.get_pc_thunk.bx, @function
-__x86.get_pc_thunk.bx:
+	.section	.text.__x86.get_pc_thunk.si,"axG",@progbits,__x86.get_pc_thunk.si,comdat
+	.globl	__x86.get_pc_thunk.si
+	.hidden	__x86.get_pc_thunk.si
+	.type	__x86.get_pc_thunk.si, @function
+__x86.get_pc_thunk.si:
 .LFB12:
 	.cfi_startproc
-	movl	(%esp), %ebx
+	movl	(%esp), %esi
 	ret
 	.cfi_endproc
 .LFE12:
