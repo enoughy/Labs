@@ -1,0 +1,2 @@
+#!/bin/bash
+g++ -O3 lab_7_blas.cpp -o lab_7_blas -lopenblas

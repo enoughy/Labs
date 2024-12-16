@@ -1,0 +1,2 @@
+#!/bin/bash
+g++ -O3 -fno-tree-vectorize lab_7.cpp -o lab_7  
