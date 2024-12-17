@@ -115,13 +115,19 @@ float *reverse_matrix(float *A, int N, int M) {
   matrix_mult(N, N, N, temp, R, R_degree);
   matrix_summ(N, N, R, temp);
   R_temp = (float *)calloc(N * N, sizeof(float));
+  auto R_degree_ptr = R_degree;
+
   for (int i = 0; i < M; i++) {
     matrix_mult(N, N, N, R, R_degree, R_temp);
     R_degree = R_temp;
+    R_temp = R_degree_ptr;
+    R_degree_ptr = R_degree;
     matrix_summ(N, N, R_degree, temp);
   }
+
   float *revers_A = (float *)calloc(N * N, sizeof(float));
   matrix_mult(N, N, N, temp, B, revers_A);
+  free(R_temp);
   free(R_degree);
   free(temp);
   free(B);
@@ -151,14 +157,9 @@ float *createRandomSquareMatrix(int size) {
 }
 
 int main() {
-  int N = 2048;
+  int N = 2024;
   float *A = NULL;
   A = createRandomSquareMatrix(N);
-  // printMatrix(N, A);
-  printf("\n");
-  float *B = (float *)malloc(sizeof(float) * N);
-  float *R = (float *)calloc(sizeof(float) * N, 0);
-  float *C = (float *)calloc(sizeof(float) * N, 0);
   auto start = std::chrono::high_resolution_clock::now();
   float *T = reverse_matrix(A, N, 10);
   auto end = std::chrono::high_resolution_clock::now();

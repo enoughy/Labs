@@ -23,9 +23,6 @@ void check_alignment(const void *ptr, const char *name) {
 
 void matrix_mult(int M, int N, int K, const float *A, const float *B,
                  float *C) {
-  // check_alignment(A, "A");
-  // check_alignment(B, "B");
-  // check_alignment(C, "C");
   for (int i = 0; i < M; ++i) {
     float *c = C + i * N;
 
@@ -40,8 +37,6 @@ void matrix_mult(int M, int N, int K, const float *A, const float *B,
       // Загружаем элемент a в SIMD-регистр
       __m256 a_vec = _mm256_set1_ps(a);
 
-      // Обрабатываем элементы b и c блоками по 8
-
       for (int j = 8 - (k * N % 8); j <= N - 8; j += 8) {
         // Загружаем 8 элементов из b и c
         __m256 b_vec = _mm256_load_ps(&b[j]);
@@ -54,7 +49,6 @@ void matrix_mult(int M, int N, int K, const float *A, const float *B,
         _mm256_store_ps(&c[j], c_vec);
       }
 
-      // Обрабатываем оставшиеся элементы (если N не кратно 8)
       for (int j = 0; j < 8 - (k * N % 8); ++j) {
         c[j] += a * b[j];
       }
@@ -66,19 +60,10 @@ void matrix_mult(int M, int N, int K, const float *A, const float *B,
   }
 }
 
-/*void matrix_summ(int N, int K, float *B, float *A) {
-  for (int i = 0; i < N; i++) {
-    for (int j = 0; j < N; j++) {
-      A[i * N + j] += B[i * N + j];
-    }
-  }
-}*/
-
 void matrix_summ(int N, int K, float *B, float *A) {
   int size = N * N; // Размер матрицы (число элементов)
   int i = 0;
 
-  // Векторизованный цикл с шагом 8 (AVX обрабатывает 8 float одновременно)
   for (; i <= size - 8; i += 8) {
     __m256 vecA = _mm256_load_ps(&A[i]);       // Загружаем 8 элементов из A
     __m256 vecB = _mm256_load_ps(&B[i]);       // Загружаем 8 элементов из B
@@ -86,7 +71,6 @@ void matrix_summ(int N, int K, float *B, float *A) {
     _mm256_store_ps(&A[i], vecSum); // Сохраняем результат обратно в A
   }
 
-  // Оставшиеся элементы (если размер не делится на 8)
   for (; i < size; i++) {
     A[i] += B[i];
   }
@@ -186,15 +170,18 @@ float *reverse_matrix(float *A, int N, int M) {
   matrix_mult(N, N, N, temp, R, R_degree);
   matrix_summ(N, N, R, temp);
   float *R_temp = allocate_matrix(N);
+  auto R_degree_ptr = R_degree;
   for (int i = 0; i < M; i++) {
     // R_temp = (float *)calloc(N * N, sizeof(float));
     matrix_mult(N, N, N, R, R_degree, R_temp);
-    R_degree = R_temp; // Либо так либо копировать
+    R_degree = R_temp;
+    R_temp = R_degree_ptr;
+    R_degree_ptr = R_degree;
     matrix_summ(N, N, R_degree, temp);
   }
-  free(R_temp);
   // float *revers_A = (float *)calloc(N * N, sizeof(float));
   float *revers_A = allocate_matrix(N);
+  free(R_temp);
   matrix_mult(N, N, N, temp, B, revers_A);
   free(R_degree);
   free(temp);
@@ -227,13 +214,8 @@ float *createRandomSquareMatrix(int size) {
 }
 
 int main() {
-  int N = 2048;
+  int N = 2024;
   float *A = createRandomSquareMatrix(N);
-  // printMatrix(N, A);
-  printf("\n");
-  float *B = (float *)malloc(sizeof(float) * N);
-  float *R = (float *)calloc(sizeof(float) * N, 0);
-  float *C = (float *)calloc(sizeof(float) * N, 0);
   auto start = std::chrono::high_resolution_clock::now();
   float *T = reverse_matrix(A, N, 10);
   auto end = std::chrono::high_resolution_clock::now();

@@ -10,19 +10,8 @@ void matrix_mult(int M, int N, int K, const float *A, const float *B,
   float alpha = 1.0f; // Коэффициент для A * B
   float beta = 0.0f;  // Коэффициент для исходного C
 
-  // Выполняем умножение матриц C = A * B
-  cblas_sgemm(CblasRowMajor, // Хранение матриц в строковом порядке
-              CblasNoTrans,  // Матрица A используется как есть
-              CblasNoTrans,  // Матрица B используется как есть
-              M,             // Количество строк матрицы A
-              N,             // Количество столбцов матрицы B
-              K,             // Количество столбцов A и строк B
-              alpha,         // Множитель для произведения A и B
-              A, K,          // Матрица A и её ведущий размер
-              B, N,          // Матрица B и её ведущий размер
-              beta,          // Множитель для C
-              C, N           // Результирующая матрица C и её ведущий размер
-  );
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, M, N, K, alpha, A, K,
+              B, N, beta, C, N);
 }
 
 void matrix_summ(int N, int K, float *B, float *A) {
@@ -109,9 +98,12 @@ float *reverse_matrix(float *A, int N, int M) {
   matrix_mult(N, N, N, temp, R, R_degree);
   matrix_summ(N, N, R, temp);
   R_temp = (float *)calloc(N * N, sizeof(float));
+  auto R_degree_ptr = R_degree;
   for (int i = 0; i < M; i++) {
     matrix_mult(N, N, N, R, R_degree, R_temp);
-    R_degree = R_temp; // Либо так либо копировать
+    R_degree = R_temp;
+    R_temp = R_degree_ptr;
+    R_degree_ptr = R_degree;
     matrix_summ(N, N, R_degree, temp);
   }
   free(R_temp);
@@ -125,17 +117,14 @@ float *reverse_matrix(float *A, int N, int M) {
 }
 
 float *createRandomSquareMatrix(int size) {
-  // Выделяем память для матрицы
   float *matrix = (float *)malloc(size * size * sizeof(float));
   if (matrix == NULL) {
     printf("Error: Memory allocation failed!\n");
     return NULL;
   }
 
-  // Инициализируем генератор случайных чисел
   srand(time(NULL));
 
-  // Заполняем матрицу случайными значениями
   for (int i = 0; i < size; i++) {
     for (int j = 0; j < size; j++) {
       matrix[i * size + j] =
@@ -149,11 +138,6 @@ int main() {
   int N = 2024;
   float *A = NULL;
   A = createRandomSquareMatrix(N);
-  // printMatrix(N, A);
-  printf("\n");
-  float *B = (float *)malloc(sizeof(float) * N);
-  float *R = (float *)calloc(sizeof(float) * N, 0);
-  float *C = (float *)calloc(sizeof(float) * N, 0);
   auto start = std::chrono::high_resolution_clock::now();
   float *T = reverse_matrix(A, N, 10);
   auto end = std::chrono::high_resolution_clock::now();

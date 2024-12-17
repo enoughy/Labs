@@ -1,2 +1,2 @@
 #!/bin/bash
-g++ -O3 -fno-tree-vectorize -mavx -mfma lab_7_vector.cpp -o lab_7_vector
+g++ -O3 -mfma lab_7_vector.cpp -o lab_7_vector
