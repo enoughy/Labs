@@ -2,7 +2,6 @@
 #include <immintrin.h>
 #include <iomanip>
 #include <iostream>
-#include <locale>
 #include <vector>
 
 int const offset = 1024 * 8 * 4; // смещение 128кб для int(4)
@@ -12,8 +11,16 @@ std::vector<int> create_array(int size_cache, int fragments_count) {
   std::vector<int> array(size);
   for (int j = 0; j < size; j += offset) {
 
-    for (int i = 0; i < size_cache / fragments_count / sizeof(int); i++) {
-      array[i + j] = (i + j + offset) % (size);
+    if (j + offset != size) {
+
+      for (int i = 0; i < size_cache / fragments_count / sizeof(int); i++) {
+        array[i + j] = (i + j + offset) % (size);
+      }
+
+    } else {
+      for (int i = 0; i < size_cache / fragments_count / sizeof(int); i++) {
+        array[i + j] = (i + 1) % (size_cache / fragments_count / sizeof(int));
+      }
     }
   }
   return array;
@@ -41,18 +48,12 @@ void benchmark_to_csv(int size_cache, int min_fragments, int max_fragments,
     std::cerr << "Не удалось открыть файл для записи!" << std::endl;
     return;
   }
-  std::locale::global(
-      std::locale("ru_RU.utf8")); // Локаль для русского// языка
-                                  // std::cout.imbue(std::locale("ru_RU.utf8"));
-  //  Записываем заголовок CSV
+
   csv_file << "Fragments Count,Elapsed Time (ticks)\n";
 
-  // Проводим измерения
   for (int fragments = min_fragments; fragments <= max_fragments; ++fragments) {
     long double time = travaling_time(fragments, size_cache);
     csv_file << fragments << "," << time << "\n";
-    // std::cout << std::setprecision(6) << "Fragments: " << fragments
-    //          << ", Time: " << time << " ticks" << std::endl;
   }
 
   csv_file.close();
@@ -60,7 +61,7 @@ void benchmark_to_csv(int size_cache, int min_fragments, int max_fragments,
 }
 
 int main() {
-  int size_cache = 64 * 1024; // Размер кэша (например, 64 КБ)
+  int size_cache = 32 * 1024; // Размер кэша
   int min_fragments = 1;      // Минимальное количество фрагментов
   int max_fragments = 32;     // Максимальное количество фрагментов
   std::string filename = "cache_benchmark.csv";
