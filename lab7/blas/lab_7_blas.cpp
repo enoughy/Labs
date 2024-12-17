@@ -98,12 +98,11 @@ float *reverse_matrix(float *A, int N, int M) {
   matrix_mult(N, N, N, temp, R, R_degree);
   matrix_summ(N, N, R, temp);
   R_temp = (float *)calloc(N * N, sizeof(float));
-  auto R_degree_ptr = R_degree;
   for (int i = 0; i < M; i++) {
     matrix_mult(N, N, N, R, R_degree, R_temp);
+    auto R_degree_ptr = R_degree;
     R_degree = R_temp;
     R_temp = R_degree_ptr;
-    R_degree_ptr = R_degree;
     matrix_summ(N, N, R_degree, temp);
   }
   free(R_temp);
